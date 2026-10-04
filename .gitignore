@@ -1,0 +1,18 @@
+# 認証情報・秘密鍵
+*.token
+*token*
+*.pem
+*.key
+*.ini
+!config/cloudflare/cloudflare.ini.example
+
+# vdirsyncer キャッシュ・ステータス
+.local/
+status/
+
+# Python 生成物
+__pycache__/
+*.pyc
+
+# ログファイル
+*.log
