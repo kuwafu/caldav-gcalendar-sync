@@ -1,0 +1,23 @@
+[general]
+status_path = "~/.local/share/vdirsyncer/status/"
+
+[pair my_calendar]
+a = "nc_cal"
+b = "google_cal"
+collections = [["personal", "personal", "your-account@gmail.com"]]
+conflict_resolution = "b wins"
+
+# --- Nextcloud ---
+[storage nc_cal]
+type = "caldav"
+url = "https://ncp.example.com/remote.php/dav/"
+username = "your_username"
+password = "your_nextcloud_app_password"
+verify = "/etc/ssl/certs/ca-certificates.crt"
+
+# --- Google Calendar ---
+[storage google_cal]
+type = "google_calendar"
+client_id = "YOUR_CLIENT_ID.apps.googleusercontent.com"
+client_secret = "YOUR_CLIENT_SECRET"
+token_file = "/root/.config/vdirsyncer/google_token"

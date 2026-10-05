@@ -1,0 +1,2 @@
+# Cloudflare API Token (Zone:DNS:Edit 権限のみ付与した最小権限トークン)
+dns_cloudflare_api_token = YOUR_CLOUDFLARE_SCOPED_API_TOKEN

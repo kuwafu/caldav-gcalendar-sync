@@ -1,0 +1,14 @@
+[Unit]
+Description=vdirsyncer calendar sync service
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/bin/vdirsyncer sync
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
