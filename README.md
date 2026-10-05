@@ -96,5 +96,8 @@ cp systemd/vdirsyncer.* /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable --now vdirsyncer.timer
 ```
+
+---
+
 ## 5. ライセンス (License)
 MIT License
