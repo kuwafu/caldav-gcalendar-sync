@@ -1,10 +1,14 @@
 # 認証情報・秘密鍵
 *.token
-*token*
+*token*.json
+google_token
 *.pem
 *.key
 *.ini
 !config/cloudflare/cloudflare.ini.example
+
+# スクリプトは除外対象から除外し確実に追跡
+!scripts/get_token.py
 
 # vdirsyncer キャッシュ・ステータス
 .local/

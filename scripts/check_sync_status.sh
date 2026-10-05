@@ -1,12 +1,11 @@
 #!/bin/bash
 # ==============================================================================
 # check_sync_status.sh
-# vdirsyncer 同期状態およびタイマー監視スクリプト
+# vdirsyncer 同期状態および systemd 監視スクリプト
 # ==============================================================================
 
 set -euo pipefail
 
-LOG_FILE="/var/log/vdirsyncer.log"
 TOKEN_FILE="${HOME}/.config/vdirsyncer/google_token"
 TIMER_NAME="vdirsyncer.timer"
 SERVICE_NAME="vdirsyncer.service"
@@ -41,23 +40,24 @@ else
     echo "  - [エラー] トークンファイルが見つかりません: ${TOKEN_FILE}"
 fi
 
-# 3. ログの確認とエラー判定
-echo -e "\n[3] Log Analysis (${LOG_FILE}):"
-if [ -f "${LOG_FILE}" ]; then
-    echo "  - 最新のログ 10 行:"
+# 3. systemd journal から直近ログの確認とエラー判定
+echo -e "\n[3] Log Analysis (systemd journal: ${SERVICE_NAME}):"
+RECENT_LOGS=$(journalctl -u "${SERVICE_NAME}" -n 10 --no-pager 2>/dev/null || true)
+
+if [ -n "${RECENT_LOGS}" ]; then
+    echo "  - 直近の実行ログ 10 行:"
     echo "--------------------------------------------------"
-    tail -n 10 "${LOG_FILE}"
+    echo "${RECENT_LOGS}"
     echo "--------------------------------------------------"
 
     # エラー・例外キーワードの検出
-    if grep -Ei "error|exception|critical|failed" "${LOG_FILE}" > /dev/null 2>&1; then
-        echo "  - [注意] ログ内にエラーまたは警告キーワードが検出されました。"
+    if echo "${RECENT_LOGS}" | grep -Ei "error|exception|critical|failed" > /dev/null 2>&1; then
+        echo "  - [注意] 直近ログ内にエラーまたは警告キーワードが検出されました。"
     else
         echo "  - ログ判定: ALL GREEN (エラー検出なし)"
     fi
 else
-    echo "  - ログファイルが存在しません。systemd journal を確認してください:"
-    echo "    journalctl -u ${SERVICE_NAME} -n 10"
+    echo "  - [警告] 実行ログが journald に見当たりません。"
 fi
 
 echo -e "\n=================================================="
