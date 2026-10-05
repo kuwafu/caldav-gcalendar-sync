@@ -97,6 +97,42 @@ systemctl daemon-reload
 systemctl enable --now vdirsyncer.timer
 ```
 
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph Cloud [External Cloud Services]
+        GC[Google Calendar API]
+        CF[Cloudflare DNS-01 ACME]
+    end
+
+    subgraph Mesh [Mesh Network]
+        TS[Tailscale Encrypted Mesh VPN]
+    end
+
+    subgraph Host [Proxmox VE Infrastructure]
+        subgraph LXC [Unprivileged LXC Container]
+            VD[vdirsyncer Core]
+            Timer[systemd timer / service]
+            Timer -->|Trigger Sync| VD
+        end
+
+        NC[Nextcloud CalDAV Server]
+    end
+
+    %% Sync Flow
+    GC <-->|HTTPS OAuth2| VD
+    TS <-->|Zero-Trust Routing| VD
+    VD <-->|HTTPS Valid SSL Cert| NC
+    CF -.->|Automated SSL Validation| NC
+
+    %% Styling
+    classDef cloud fill:#f4f6f8,stroke:#94a3b8,stroke-width:1px;
+    classDef infra fill:#f8fafc,stroke:#3b82f6,stroke-width:2px;
+    class GC,CF cloud;
+    class Host,LXC infra;
+```
+
 ---
 
 ## 5. ライセンス (License)
